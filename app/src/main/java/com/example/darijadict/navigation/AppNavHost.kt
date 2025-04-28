@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Recommend
@@ -84,7 +85,7 @@ fun AppNavHost(
                             launchSingleTop = true
                         }
                     },
-                    icon = { Icon(Icons.Filled.Recommend, contentDescription = "Grammar") },
+                    icon = { Icon(Icons.Filled.Construction, contentDescription = "Grammar") },
                     label = { Text("Grammar") }
                 )
                 // Remove the Custom List button

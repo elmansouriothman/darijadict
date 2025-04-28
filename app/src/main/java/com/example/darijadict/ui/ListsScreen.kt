@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,11 +22,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -45,7 +56,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -103,11 +117,21 @@ fun ListsScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "📚 Your Lists",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ){
+            Icon(
+                Icons.AutoMirrored.Filled.FormatListBulleted,
+                "Lists", modifier = Modifier.width(32.dp).height(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Lists",
+                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Start
+            )
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -130,9 +154,9 @@ fun ListsScreen(
                         val file = File(downloadsDir, fileName)
 
                         try {
-                            // Destructure the Pair returned by downloadApkg
+
                             val (success, message) = ApkgDownloader.downloadApkg(context) // Ensure this returns Pair<Boolean, String>
-                            
+
                             if (success) {
                                 file.writeText(message) // Assuming message contains the content to write
                                 Toast.makeText(context, "File saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
@@ -157,15 +181,30 @@ fun ListsScreen(
             }
         }
 
-        Button(
-            onClick = {
-                navController.navigate("saved")
-            },
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 16.dp),
+            shape = MaterialTheme.shapes.medium,
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Match the card elevation
         ) {
-            Text("Saved")
+            Button(
+                onClick = {
+                    navController.navigate("saved") // Ensure this matches your navigation route
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant, // Match color with EntryCard
+                    contentColor = Color.Black // Adjust text color accordingly
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp) // Adjust padding to match the button style in EntryCard
+            ) {
+
+                Icon(Icons.Filled.Bookmarks, contentDescription = "Saved")
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Saved", style = MaterialTheme.typography.titleMedium, modifier = Modifier.fillMaxWidth(1f))
+            }
         }
 
         Spacer(Modifier.height(16.dp))
@@ -271,12 +310,17 @@ private fun ListItemCard(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
+
         ) {
+            Icon(Icons.Filled.EditNote, contentDescription = "Playlist")
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = list.name,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
-            )
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.weight(1f),
+
+                )
+
 
             Box {
                 IconButton(onClick = { menuExpanded = true }) {
