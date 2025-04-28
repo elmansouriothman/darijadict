@@ -31,11 +31,12 @@ fun EntryCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp)
+            .fillMaxHeight(0.9f)
             .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(10.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -49,15 +50,15 @@ fun EntryCard(
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(9.dp))
                 Text(
                     text = entry.arabicScript,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Start
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(9.dp))
                 Text(text = entry.meaning, style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
             }
 
             Column {

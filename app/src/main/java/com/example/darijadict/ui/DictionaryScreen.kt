@@ -6,12 +6,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,7 @@ import com.example.darijadict.viewmodel.EntryViewModel
 import com.example.darijadict.viewmodel.SearchCategory
 import com.example.darijadict.data.Entry
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun DictionaryScreen(
@@ -62,11 +65,31 @@ fun DictionaryScreen(
             .padding(16.dp)
     ) {
         Row(
-            modifier = Modifier
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ){
+            Icon(
+                Icons.Filled.MenuBook,
+                "Dictionary", modifier = Modifier.width(32.dp).height(32.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Dictionary",
+                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Start
+            )
+        }
+        Spacer(modifier = Modifier.height(18.dp))
+        Row(
+            modifier = Modifier.shadow(
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(50)
+                )
+                .padding(bottom = 8.dp)
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(50.dp)
                 .clip(RoundedCornerShape(50))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(MaterialTheme.colorScheme.surface),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box {
@@ -102,7 +125,7 @@ fun DictionaryScreen(
                     viewModel.updateQuery(it)
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surface
                 ),
                 placeholder = { Text("Search...") },
                 modifier = Modifier
@@ -113,12 +136,10 @@ fun DictionaryScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Column(modifier = Modifier.fillMaxSize()) {
 
             EntryListScreen(
-                title = "📖 Dictionary",
+                title = "",
                 entries = filtered,
                 viewModel = viewModel,
                 onEntryClick = onEntryClick
