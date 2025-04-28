@@ -5,9 +5,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.outlined.Queue
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -76,7 +77,7 @@ fun EntryDetailScreen(
 
                 IconButton(onClick = { playAssetAudio(context, it) }) {
                     Icon(
-                        imageVector = Icons.Filled.VolumeUp,
+                        imageVector = Icons.AutoMirrored.Filled.VolumeUp,
                         contentDescription = "Pronunciation",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(50.dp)
@@ -93,7 +94,7 @@ fun EntryDetailScreen(
 
         // Meaning
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.MenuBook, contentDescription = "Meaning", tint = iconColors["meaning"]!!, modifier = iconModifier)
+            Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Meaning", tint = iconColors["meaning"]!!, modifier = iconModifier)
             Spacer(Modifier.width(8.dp))
             Text(
                 buildAnnotatedString {
