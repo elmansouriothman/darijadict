@@ -2,6 +2,7 @@ package com.example.darijadict.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,6 +54,7 @@ import com.example.darijadict.data.CustomList
 import com.example.darijadict.util.ApkgDownloader
 import com.example.darijadict.viewmodel.EntryViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
 fun ListsScreen(
@@ -119,29 +121,38 @@ fun ListsScreen(
             }
 
             Button(
-    onClick = {
-        if (hasStoragePermission) {
-            val (success, message) = ApkgDownloader.downloadApkg(context) // Destructure the Pair
-            if (success) {
-                // Show success message
-                Toast.makeText(context, "File downloaded successfully: $message", Toast.LENGTH_LONG).show() // You can add message to the Toast
-                Log.d("ListsScreen", "File downloaded successfully: $message")
-            } else {
-                // Show error message
-                Toast.makeText(context, "Failed to download file: $message", Toast.LENGTH_LONG).show() // Add the error message to the Toast
-                Log.e("ListsScreen", "Failed to download file: $message")
-            }
-        } else {
-            launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-    },
-    modifier = Modifier.weight(1f),
+                onClick = {
+                    if (hasStoragePermission) {
+                        val fileName = "darija_deck.apkg"
+                        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        val file = File(downloadsDir, fileName)
 
-) {
-    Icon(Icons.Default.FileDownload, contentDescription = "Download")
-    Spacer(Modifier.width(8.dp))
-    Text("Download Note")
-}
+                        try {
+                            // Destructure the Pair returned by downloadApkg
+                            val (success, message) = ApkgDownloader.downloadApkg(context) // Ensure this returns Pair<Boolean, String>
+                            
+                            if (success) {
+                                file.writeText(message) // Assuming message contains the content to write
+                                Toast.makeText(context, "File saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                                Log.d("ListsScreen", "File saved to ${file.absolutePath}");
+                            } else {
+                                Toast.makeText(context, "Failed to download file: $message", Toast.LENGTH_SHORT).show()
+                                Log.e("ListsScreen", "Failed to download file: $message");
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Failed to save file: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Log.e("ListsScreen", "Failed to save file: ${e.message}");
+                        }
+                    } else {
+                        launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    }
+                },
+                modifier = Modifier.weight(1f),
+            ) {
+                Icon(Icons.Default.FileDownload, contentDescription = "Download")
+                Spacer(Modifier.width(8.dp))
+                Text("Download .apkg")
+            }
         }
 
         Spacer(Modifier.height(16.dp))

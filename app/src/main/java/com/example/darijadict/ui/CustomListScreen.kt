@@ -8,6 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.darijadict.data.Entry
 import com.example.darijadict.viewmodel.EntryViewModel
+import android.content.Context
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.Manifest
+import androidx.compose.ui.platform.LocalContext
+import java.io.File
+import android.os.Environment
 
 sealed interface DialogType {
     data object Delete : DialogType
@@ -19,8 +28,30 @@ fun CustomListScreen(
     listId: Int,
     viewModel: EntryViewModel,
     onEntryClick: (Entry) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    context: Context
 ) {
+    // Check if permission is granted
+    val context = LocalContext.current
+    val permissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    LaunchedEffect(permissionGranted) {
+        if (!permissionGranted) {
+            ActivityCompat.requestPermissions(
+                context as android.app.Activity,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                1
+            )
+        }
+    }
+
     // Validate listId early
     if (listId == -1) {
         LaunchedEffect(Unit) { onNavigateBack() }
@@ -52,6 +83,13 @@ fun CustomListScreen(
 
         Spacer(Modifier.height(8.dp))
 
+        Button(
+            onClick = { exportList(entries, listName, context) },
+            modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
+        ) {
+            Text("Export List")
+        }
+
         // List entries
         EntryListScreen(
             title = "",
@@ -79,6 +117,44 @@ fun CustomListScreen(
             )
             null -> Unit
         }
+    }
+}
+
+private fun exportList(entries: List<Entry>, listName: String, context: Context) {
+    val fileContent = buildString {
+        append("#separator:semicolon\n")
+        append("#html:true\n")
+        entries.forEach { entry ->
+            // Format each field, leaving empty if null or empty
+            val word = entry.word ?: ""
+            val pos = entry.pos ?: ""
+            val plural = entry.plural ?: ""
+            val present = entry.present ?: ""
+            val fs = entry.fs ?: ""
+            val mp = entry.mp ?: ""
+            val fp = entry.fp ?: ""
+            val arabicScript = entry.arabicScript ?: ""
+            val meaning = entry.meaning ?: ""
+            val uses = entry.uses ?: ""
+            val example = entry.example ?: ""
+            val pronunciationFormatted = entry.pronunciation?.let { "[sound:$it]" } ?: ""
+            val usesPronunciationFormatted = entry.usesPronunciation?.let { "[sound:$it]" } ?: ""
+
+            // Build the line without a trailing semicolon
+            append("$word;$pos;$plural;$present;$fs;$mp;$fp;$arabicScript;$meaning;$uses;$example;$pronunciationFormatted;$usesPronunciationFormatted\n")
+        }
+    }
+
+    // Save file logic here
+    val fileName = "$listName.txt" // Use the list name as the filename
+    val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    val file = File(downloadsDir, fileName)
+
+    try {
+        file.writeText(fileContent)
+        Toast.makeText(context, "Exported to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Toast.makeText(context, "Failed to export: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }
 

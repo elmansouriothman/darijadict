@@ -3,7 +3,6 @@ package com.example.darijadict.navigation
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Bookmarks
@@ -14,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
@@ -119,6 +119,20 @@ fun AppNavHost(
                     alwaysShowLabel = true,
                     label = { Text("Links") }
                 )
+                // Remove the Custom List button
+                /* NavigationBarItem(
+                    selected = currentRoute == "customList",
+                    onClick = {
+                        navController.navigate("customList") {
+                            Log.d("Navigation", "Navigating to: customList")
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
+                    },
+                    icon = { Icon(Icons.Filled.List, contentDescription = "Custom List") },
+                    label = { Text("Custom List") }
+                ) */
             }
         }
     ) { innerPadding ->
@@ -155,6 +169,15 @@ fun AppNavHost(
             composable("guide") {
                 GuideScreen(navController = navController)
             }
+            composable("customList") { 
+                CustomListScreen(
+                    listId = -1, 
+                    viewModel = viewModel,
+                    onEntryClick = { /* handle entry click */ },
+                    onNavigateBack = { /* handle navigate back */ },
+                    context = LocalContext.current 
+                ) 
+            }
             composable(
                 "detail/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
@@ -176,7 +199,8 @@ fun AppNavHost(
                         onNavigateBack = {
                             navController.popBackStack()
                             navController.navigate("lists")
-                        }
+                        },
+                        context = LocalContext.current
                     )
                 } else {
                     navController.popBackStack()

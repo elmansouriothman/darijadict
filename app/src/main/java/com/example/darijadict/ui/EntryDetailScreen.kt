@@ -26,10 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.example.darijadict.data.Entry
 import com.example.darijadict.util.playAssetAudio
 import com.example.darijadict.viewmodel.EntryViewModel
-
-
-
-
+import android.content.Context
+import android.widget.Toast
+import java.io.File
 
 @Composable
 fun EntryDetailScreen(
@@ -61,6 +60,7 @@ fun EntryDetailScreen(
         "brightRed" to brightRed,
         "darkBlue" to darkBlue
     )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
