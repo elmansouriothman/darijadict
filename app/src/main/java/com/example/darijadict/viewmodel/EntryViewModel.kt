@@ -139,4 +139,5 @@ class EntryViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
 }

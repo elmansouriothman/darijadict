@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- For app-specific downloads (Android 10+) -->
+    <external-files-path
+        name="downloads"
+        path="" />
+
+    <!-- For public Downloads directory (Pre-Android 10) -->
+    <external-path
+        name="public_downloads"
+        path="Download/" />
+
+    <!-- Optional: Cache directory if needed -->
+    <cache-path
+        name="cache"
+        path="/" />
+</paths>
