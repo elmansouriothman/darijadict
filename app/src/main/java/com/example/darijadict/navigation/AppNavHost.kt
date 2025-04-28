@@ -3,11 +3,11 @@ package com.example.darijadict.navigation
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Handyman
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Recommend
 import androidx.compose.material3.*
@@ -33,6 +33,21 @@ fun AppNavHost(
         modifier = modifier,
         bottomBar = {
             NavigationBar {
+                NavigationBarItem(
+                    selected = currentRoute == "guide",
+                    onClick = {
+                        navController.navigate("guide") {
+                            Log.d("Navigation", "Navigating to: guide")
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
+                    },
+                    icon = { Icon(Icons.Filled.Info, contentDescription = "Guide") },
+                    label = { Text("Guide") }
+                )
+
+
                 NavigationBarItem(
                     selected = currentRoute == "dictionary",
                     onClick = {
@@ -82,7 +97,7 @@ fun AppNavHost(
                             launchSingleTop = true
                         }
                     },
-                    icon = { Icon(Icons.Filled.Handyman, contentDescription = "Grammar") },
+                    icon = { Icon(Icons.Filled.Recommend, contentDescription = "Grammar") },
                     label = { Text("Grammar") }
                 )
                 NavigationBarItem(
@@ -136,6 +151,9 @@ fun AppNavHost(
             }
             composable("recommendations") {
                 RecommendationsScreen(navController = navController)
+            }
+            composable("guide") {
+                GuideScreen(navController = navController)
             }
             composable(
                 "detail/{id}",
