@@ -75,19 +75,6 @@ fun AppNavHost(
                     label = { Text("Lists") }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == "saved",
-                    onClick = {
-                        navController.navigate("saved") {
-                            Log.d("Navigation", "Navigating to: saved")
-                            restoreState = true
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
-                        }
-                    },
-                    icon = { Icon(Icons.Filled.Bookmarks, contentDescription = "Saved") },
-                    label = { Text("Saved") }
-                )
-                NavigationBarItem(
                     selected = currentRoute == "grammar",
                     onClick = {
                         navController.navigate("grammar") {
@@ -99,25 +86,6 @@ fun AppNavHost(
                     },
                     icon = { Icon(Icons.Filled.Recommend, contentDescription = "Grammar") },
                     label = { Text("Grammar") }
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "recommendations",
-                    onClick = {
-                        navController.navigate("recommendations") {
-                            Log.d("Navigation", "Navigating to: recommendations")
-                            restoreState = true
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            Icons.Filled.Link,
-                            contentDescription = "Recommendations"
-                        )
-                    },
-                    alwaysShowLabel = true,
-                    label = { Text("Links") }
                 )
                 // Remove the Custom List button
                 /* NavigationBarItem(
@@ -151,20 +119,12 @@ fun AppNavHost(
                 ListsScreen(
                     viewModel = viewModel,
                     onCreateList = { navController.navigate("lists") { popUpTo("lists") { inclusive = true }; launchSingleTop = true } },
-                    onListClick = { listId -> navController.navigate("customList/$listId") }
-                )
-            }
-            composable("saved") {
-                SavedScreen(
-                    viewModel = viewModel,
-                    onEntryClick = { entry -> navController.navigate("detail/${entry.id}") }
+                    onListClick = { listId -> navController.navigate("customList/$listId") },
+                    navController = navController // Ensure this line is included
                 )
             }
             composable("grammar") {
                 GrammarLessonScreen(navController = navController)
-            }
-            composable("recommendations") {
-                RecommendationsScreen(navController = navController)
             }
             composable("guide") {
                 GuideScreen(navController = navController)
@@ -213,6 +173,16 @@ fun AppNavHost(
             ) { backStackEntry ->
                 val url = backStackEntry.arguments?.getString("url") ?: ""
                 WebViewScreen(navController = navController, url = url)
+            }
+            composable("recommendations") { 
+                RecommendationsScreen(navController = navController) 
+            }
+            composable("saved") { 
+                SavedScreen(
+                    viewModel = viewModel,
+                    onEntryClick = { entry -> navController.navigate("detail/${entry.id}") },
+                    navController = navController 
+                ) 
             }
         }
     }

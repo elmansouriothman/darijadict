@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.navigation.NavController
 import com.example.darijadict.data.CustomList
 import com.example.darijadict.util.ApkgDownloader
 import com.example.darijadict.viewmodel.EntryViewModel
@@ -60,7 +61,8 @@ import java.io.File
 fun ListsScreen(
     viewModel: EntryViewModel,
     onCreateList: (Int) -> Unit,
-    onListClick: (Int) -> Unit
+    onListClick: (Int) -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
     val allLists by viewModel.allLists.observeAsState(emptyList())
@@ -153,6 +155,17 @@ fun ListsScreen(
                 Spacer(Modifier.width(8.dp))
                 Text("Download .apkg")
             }
+        }
+
+        Button(
+            onClick = {
+                navController.navigate("saved")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text("Saved")
         }
 
         Spacer(Modifier.height(16.dp))

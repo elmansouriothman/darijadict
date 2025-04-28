@@ -20,8 +20,21 @@ fun GuideScreen(navController: NavController) {
         guideContent = loadGuideText(context)
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text(text = guideContent, style = MaterialTheme.typography.bodyLarge)
+
+        Button(
+            onClick = {
+                navController.navigate("recommendations") // Ensure this matches your navigation route
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Recommended Links")
+        }
     }
 }
 
