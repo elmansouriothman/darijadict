@@ -1,0 +1,102 @@
+package com.example.darijadict.ui
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.darijadict.data.CustomList
+import com.example.darijadict.viewmodel.EntryViewModel
+import kotlinx.coroutines.launch
+
+@Composable
+fun AddToListDialog(
+    viewModel: EntryViewModel,
+    entryId: Int,
+    onDismiss: () -> Unit
+) {
+    val allLists by viewModel.allLists.observeAsState(emptyList())
+    val listsForEntry by viewModel.getListsForEntry(entryId).observeAsState(emptyList())
+    var showCreateDialog by remember { mutableStateOf(false) }
+    var newListName by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add to List") },
+        text = {
+            Column {
+                if (allLists.isEmpty()) {
+                    Text(
+                        "No lists available. Create one first!",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } else {
+                    LazyColumn {
+                        items(allLists) { list ->
+                            val isInList = listsForEntry.any { it.id == list.id }
+                            ListItem(
+                                headlineContent = { Text(list.name) },
+                                trailingContent = {
+                                    Checkbox(
+                                        checked = isInList,
+                                        onCheckedChange = { _ ->
+                                            viewModel.toggleEntryInList(entryId, list.id)
+                                        }
+                                    )
+                                }
+                            )
+                            Divider()
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("Done")
+            }
+        },
+        dismissButton = {
+            Button(onClick = { showCreateDialog = true }) {
+                Text("New List")
+            }
+        }
+    )
+
+    if (showCreateDialog) {
+        AlertDialog(
+            onDismissRequest = { showCreateDialog = false },
+            title = { Text("New List Name") },
+            text = {
+                OutlinedTextField(
+                    value = newListName,
+                    onValueChange = { newListName = it },
+                    label = { Text("Enter list name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.createList(newListName)
+                        newListName = ""
+                        showCreateDialog = false
+                    },
+                    enabled = newListName.isNotBlank()
+                ) {
+                    Text("Create")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showCreateDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+}
