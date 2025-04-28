@@ -6,7 +6,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Handyman
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.Recommend
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -82,6 +85,25 @@ fun AppNavHost(
                     icon = { Icon(Icons.Filled.Handyman, contentDescription = "Grammar") },
                     label = { Text("Grammar") }
                 )
+                NavigationBarItem(
+                    selected = currentRoute == "recommendations",
+                    onClick = {
+                        navController.navigate("recommendations") {
+                            Log.d("Navigation", "Navigating to: recommendations")
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Filled.Link,
+                            contentDescription = "Recommendations"
+                        )
+                    },
+                    alwaysShowLabel = true,
+                    label = { Text("Links") }
+                )
             }
         }
     ) { innerPadding ->
@@ -111,6 +133,9 @@ fun AppNavHost(
             }
             composable("grammar") {
                 GrammarLessonScreen(navController = navController)
+            }
+            composable("recommendations") {
+                RecommendationsScreen(navController = navController)
             }
             composable(
                 "detail/{id}",
