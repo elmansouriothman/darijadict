@@ -4,15 +4,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.example.darijadict.data.*
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.*
-import androidx.compose.foundation.lazy.*
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.observe
-import com.example.darijadict.viewmodel.EntryViewModel
 import androidx.lifecycle.AndroidViewModel
 import com.example.darijadict.data.CsvLoader
-import com.example.darijadict.data.GrammarLesson
-
 
 enum class SearchCategory(val displayName: String) {
     ALL("All Categories"),
@@ -21,20 +14,11 @@ enum class SearchCategory(val displayName: String) {
     ARABIC("Arabic")
 }
 
-class GrammarViewModel(application: Application) : AndroidViewModel(application) {
-    val lessons by lazy {
-        CsvLoader.loadGrammarLessonsFromAssets(getApplication())
-    }
-}
-
 class EntryViewModel(application: Application) : AndroidViewModel(application) {
     fun getAll(): LiveData<List<Entry>> = dao.getAllEntriesSortedByWord()
 
 
     private val dao = DictionaryDatabase.getDatabase(application).entryDao()
-
-    // ✅ Show entries sorted alphabetically by word on the homepage
-    val allEntries: LiveData<List<Entry>> = dao.getAllEntriesSortedByWord()
 
     val allLists: LiveData<List<CustomList>> = dao.getAllLists()
 
@@ -63,40 +47,6 @@ class EntryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _searchQuery = MutableLiveData("")
     private val _category = MutableLiveData(SearchCategory.ALL)
-
-    val searchResults: LiveData<List<Entry>> = MediatorLiveData<List<Entry>>().apply {
-        val update: () -> Unit = {
-            viewModelScope.launch {
-                val query = _searchQuery.value.orEmpty()
-                val category = _category.value ?: SearchCategory.ALL
-                val all = dao.getRawList()
-
-                val filtered = all.filter { entry ->
-                    when (category) {
-                        SearchCategory.ALL -> listOf(
-                            entry.word, entry.meaning, entry.example, entry.arabicScript,
-                            entry.plural, entry.present, entry.fs, entry.mp, entry.fp, entry.uses
-                        ).any { it?.contains(query, ignoreCase = true) == true }
-
-                        SearchCategory.DARIJA -> listOf(
-                            entry.word, entry.plural, entry.present, entry.fs, entry.mp, entry.fp, entry.uses
-                        ).any { it?.contains(query, ignoreCase = true) == true }
-
-                        SearchCategory.ENGLISH -> listOf(
-                            entry.meaning, entry.example
-                        ).any { it?.contains(query, ignoreCase = true) == true }
-
-                        SearchCategory.ARABIC -> entry.arabicScript.contains(query, ignoreCase = true)
-                    }
-                }
-
-                postValue(filtered)
-            }
-        }
-
-        addSource(_searchQuery) { update() }
-        addSource(_category) { update() }
-    }
 
     val savedWords: LiveData<List<Entry>> = dao.getSavedEntries()
 

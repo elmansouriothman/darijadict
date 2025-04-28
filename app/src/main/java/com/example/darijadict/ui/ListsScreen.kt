@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,13 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Article
-import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.MoreVert
@@ -55,13 +49,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
@@ -160,14 +154,14 @@ fun ListsScreen(
                             if (success) {
                                 file.writeText(message) // Assuming message contains the content to write
                                 Toast.makeText(context, "File saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-                                Log.d("ListsScreen", "File saved to ${file.absolutePath}");
+                                Log.d("ListsScreen", "File saved to ${file.absolutePath}")
                             } else {
                                 Toast.makeText(context, "Failed to download file: $message", Toast.LENGTH_SHORT).show()
-                                Log.e("ListsScreen", "Failed to download file: $message");
+                                Log.e("ListsScreen", "Failed to download file: $message")
                             }
                         } catch (e: Exception) {
                             Toast.makeText(context, "Failed to save file: ${e.message}", Toast.LENGTH_SHORT).show()
-                            Log.e("ListsScreen", "Failed to save file: ${e.message}");
+                            Log.e("ListsScreen", "Failed to save file: ${e.message}")
                         }
                     } else {
                         launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)

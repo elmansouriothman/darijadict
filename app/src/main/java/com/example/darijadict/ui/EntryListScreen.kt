@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.darijadict.data.CustomList
 import com.example.darijadict.data.Entry
 import com.example.darijadict.viewmodel.EntryViewModel
 

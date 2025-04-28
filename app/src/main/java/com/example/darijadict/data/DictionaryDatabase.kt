@@ -22,7 +22,7 @@ abstract class DictionaryDatabase : RoomDatabase() {
                     DictionaryDatabase::class.java,
                     "dictionary.db"
                 )
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(true)
                     .build()
                 INSTANCE = instance
                 instance
@@ -30,4 +30,3 @@ abstract class DictionaryDatabase : RoomDatabase() {
         }
     }
 }
-

@@ -1,8 +1,6 @@
 package com.example.darijadict.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.*
@@ -13,15 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.darijadict.data.Entry
 import com.example.darijadict.viewmodel.EntryViewModel
 
 @Composable
 fun SavedScreen(
     viewModel: EntryViewModel,
-    onEntryClick: (Entry) -> Unit,
-    navController: NavController
+    onEntryClick: (Entry) -> Unit
 ) {
     val savedEntries by viewModel.savedWords.observeAsState(emptyList())
     Column(

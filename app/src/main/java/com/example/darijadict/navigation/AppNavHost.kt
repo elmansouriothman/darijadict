@@ -5,16 +5,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.Recommend
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
@@ -135,9 +131,8 @@ fun AppNavHost(
                     listId = -1, 
                     viewModel = viewModel,
                     onEntryClick = { /* handle entry click */ },
-                    onNavigateBack = { /* handle navigate back */ },
-                    context = LocalContext.current 
-                ) 
+                    onNavigateBack = { /* handle navigate back */ }
+                )
             }
             composable(
                 "detail/{id}",
@@ -160,8 +155,7 @@ fun AppNavHost(
                         onNavigateBack = {
                             navController.popBackStack()
                             navController.navigate("lists")
-                        },
-                        context = LocalContext.current
+                        }
                     )
                 } else {
                     navController.popBackStack()
@@ -173,7 +167,7 @@ fun AppNavHost(
                 arguments = listOf(navArgument("url") { type = NavType.StringType })
             ) { backStackEntry ->
                 val url = backStackEntry.arguments?.getString("url") ?: ""
-                WebViewScreen(navController = navController, url = url)
+                WebViewScreen(url = url)
             }
             composable("recommendations") { 
                 RecommendationsScreen(navController = navController) 
@@ -181,9 +175,8 @@ fun AppNavHost(
             composable("saved") { 
                 SavedScreen(
                     viewModel = viewModel,
-                    onEntryClick = { entry -> navController.navigate("detail/${entry.id}") },
-                    navController = navController 
-                ) 
+                    onEntryClick = { entry -> navController.navigate("detail/${entry.id}") }
+                )
             }
         }
     }

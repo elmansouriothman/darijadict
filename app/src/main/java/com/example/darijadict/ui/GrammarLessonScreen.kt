@@ -1,6 +1,5 @@
 package com.example.darijadict.ui
 
-import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

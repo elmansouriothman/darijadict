@@ -28,8 +28,7 @@ fun CustomListScreen(
     listId: Int,
     viewModel: EntryViewModel,
     onEntryClick: (Entry) -> Unit,
-    onNavigateBack: () -> Unit,
-    context: Context
+    onNavigateBack: () -> Unit
 ) {
     // Check if permission is granted
     val context = LocalContext.current
@@ -126,15 +125,15 @@ private fun exportList(entries: List<Entry>, listName: String, context: Context)
         append("#html:true\n")
         entries.forEach { entry ->
             // Format each field, leaving empty if null or empty
-            val word = entry.word ?: ""
+            val word = entry.word
             val pos = entry.pos ?: ""
             val plural = entry.plural ?: ""
             val present = entry.present ?: ""
             val fs = entry.fs ?: ""
             val mp = entry.mp ?: ""
             val fp = entry.fp ?: ""
-            val arabicScript = entry.arabicScript ?: ""
-            val meaning = entry.meaning ?: ""
+            val arabicScript = entry.arabicScript
+            val meaning = entry.meaning
             val uses = entry.uses ?: ""
             val example = entry.example ?: ""
             val pronunciationFormatted = entry.pronunciation?.let { "[sound:$it]" } ?: ""

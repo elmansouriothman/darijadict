@@ -6,7 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -21,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.darijadict.viewmodel.EntryViewModel
 import com.example.darijadict.viewmodel.SearchCategory
 import com.example.darijadict.data.Entry
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
@@ -55,7 +54,7 @@ fun DictionaryScreen(
 
                 SearchCategory.ARABIC -> entry.arabicScript.contains(query, ignoreCase = true)
             }
-        }.sortedBy { it.word?.lowercase().orEmpty() }
+        }.sortedBy { it.word.lowercase() }
 
     }
 
@@ -69,7 +68,7 @@ fun DictionaryScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         ){
             Icon(
-                Icons.Filled.MenuBook,
+                Icons.AutoMirrored.Filled.MenuBook,
                 "Dictionary", modifier = Modifier.width(32.dp).height(32.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))

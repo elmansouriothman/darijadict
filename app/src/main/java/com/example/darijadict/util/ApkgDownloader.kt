@@ -1,11 +1,9 @@
 package com.example.darijadict.util
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
-import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -13,7 +11,6 @@ import java.io.IOException
 object ApkgDownloader {
     private const val TAG = "ApkgDownloader"
     private const val FILENAME = "darija_deck.apkg"
-    private const val PROVIDER_AUTHORITY = "com.example.darijadict.fileprovider"
     private const val BUFFER_SIZE = 8192 // Optimal buffer size for file operations
 
     /**
@@ -23,7 +20,7 @@ object ApkgDownloader {
     fun downloadApkg(context: Context): Pair<Boolean, String> {
         return try {
             // Verify asset exists
-            if (!isAssetExists(context, FILENAME)) {
+            if (!isAssetExists(context)) {
                 Log.e(TAG, "Asset $FILENAME not found")
                 return Pair(false, "File not found in app assets")
             }
@@ -45,7 +42,7 @@ object ApkgDownloader {
             }
 
             // Perform the file copy
-            copyAssetToFile(context, FILENAME, destinationFile)
+            copyAssetToFile(context, destinationFile)
 
             // Verify result
             if (!destinationFile.exists()) {
@@ -71,10 +68,10 @@ object ApkgDownloader {
     /**
      * Checks if the specified asset exists
      */
-    private fun isAssetExists(context: Context, filename: String): Boolean {
+    private fun isAssetExists(context: Context): Boolean {
         return try {
-            context.assets.list("")?.contains(filename) == true
-        } catch (e: IOException) {
+            context.assets.list("")?.contains(FILENAME) == true
+        } catch (_: IOException) {
             false
         }
     }
@@ -83,76 +80,31 @@ object ApkgDownloader {
      * Determines the appropriate storage location based on Android version
      */
     private fun getDestinationFile(context: Context): File? {
-        return when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                // Use app-specific storage on Android 10+
-                context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.let {
-                    File(it, FILENAME).apply {
-                        parentFile?.mkdirs() // Ensure directory exists
-                    }
-                }
-            }
-            else -> {
-                // Try public Downloads first, then fallback to app-specific
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)?.let {
-                        publicDir ->
-                    if (publicDir.exists() || publicDir.mkdirs()) {
-                        File(publicDir, FILENAME)
-                    } else {
-                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.let{
-                            File(it, FILENAME).apply {
-                                parentFile?.mkdirs()
-                            }
-                        }
-                    }
-                }
-            }
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Use getExternalFilesDir() for Android 10 and above
+            File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), FILENAME)
+        } else {
+            // Use getExternalStoragePublicDirectory() for older versions
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FILENAME)
         }
     }
 
     /**
      * Performs the actual file copy operation with progress tracking
      */
-    private fun copyAssetToFile(context: Context, assetName: String, destFile: File) {
-        context.assets.open(assetName).use { inputStream ->
+    private fun copyAssetToFile(context: Context, destFile: File) {
+        context.assets.open(FILENAME).use { inputStream ->
             FileOutputStream(destFile).use { outputStream ->
                 val buffer = ByteArray(BUFFER_SIZE)
                 var bytesRead: Int
                 var totalBytes = 0L
-
                 while (inputStream.read(buffer).also { bytesRead = it } != -1) {
                     outputStream.write(buffer, 0, bytesRead)
                     totalBytes += bytesRead
-                    Log.v(TAG, "Copied $totalBytes bytes...")
                 }
-                outputStream.flush()
+                Log.d(TAG, "File copy completed. Total bytes: $totalBytes")
             }
         }
     }
 
-    /**
-     * Generates a content URI for the downloaded file
-     */
-    fun getFileUri(context: Context, file: File): Uri {
-        require(file.exists()) { "File must exist before generating URI" }
-        return FileProvider.getUriForFile(
-            context,
-            PROVIDER_AUTHORITY,
-            file
-        ).also {
-            Log.d(TAG, "Generated content URI: $it")
-        }
-    }
-
-    /**
-     * Helper to get human-readable file size
-     */
-    fun getFileSizeFormatted(file: File): String {
-        val bytes = file.length()
-        return when {
-            bytes < 1024 -> "$bytes B"
-            bytes < 1024 * 1024 -> "%.1f KB".format(bytes / 1024.0)
-            else -> "%.1f MB".format(bytes / (1024.0 * 1024.0))
-        }
-    }
 }
