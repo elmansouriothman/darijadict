@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.example.darijadict"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 34 // Update to the latest stable version
         versionCode = 1
         versionName = "1.0"
     }
@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.material3:material3:1.2.0") // or latest version
+    implementation(libs.material3) // Update to the latest version
     implementation(libs.androidx.ui)
     implementation(libs.material3)
     implementation(libs.androidx.navigation.compose.v275)
