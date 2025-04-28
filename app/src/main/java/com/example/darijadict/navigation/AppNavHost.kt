@@ -1,13 +1,12 @@
-// AppNavHost.kt
 package com.example.darijadict.navigation
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Handyman
-import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -35,7 +34,7 @@ fun AppNavHost(
                     selected = currentRoute == "dictionary",
                     onClick = {
                         navController.navigate("dictionary") {
-                            Log.d("Navigation", "Current route: $currentRoute, Navigating to: dictionary")
+                            Log.d("Navigation", "Navigating to: dictionary")
                             restoreState = true
                             popUpTo(navController.graph.startDestinationId)
                             launchSingleTop = true
@@ -48,7 +47,7 @@ fun AppNavHost(
                     selected = currentRoute == "lists",
                     onClick = {
                         navController.navigate("lists") {
-                            Log.d("Navigation", "Current route: $currentRoute, Navigating to: lists")
+                            Log.d("Navigation", "Navigating to: lists")
                             restoreState = true
                             popUpTo(navController.graph.startDestinationId)
                             launchSingleTop = true
@@ -61,7 +60,7 @@ fun AppNavHost(
                     selected = currentRoute == "saved",
                     onClick = {
                         navController.navigate("saved") {
-                            Log.d("Navigation", "Current route: $currentRoute, Navigating to: saved")
+                            Log.d("Navigation", "Navigating to: saved")
                             restoreState = true
                             popUpTo(navController.graph.startDestinationId)
                             launchSingleTop = true
@@ -74,7 +73,7 @@ fun AppNavHost(
                     selected = currentRoute == "grammar",
                     onClick = {
                         navController.navigate("grammar") {
-                            Log.d("Navigation", "Current route: $currentRoute, Navigating to: grammar")
+                            Log.d("Navigation", "Navigating to: grammar")
                             restoreState = true
                             popUpTo(navController.graph.startDestinationId)
                             launchSingleTop = true
@@ -94,55 +93,35 @@ fun AppNavHost(
             composable("dictionary") {
                 DictionaryScreen(
                     viewModel = viewModel,
-                    onEntryClick = { entry ->
-                        navController.navigate("detail/${entry.id}")
-                    }
+                    onEntryClick = { entry -> navController.navigate("detail/${entry.id}") }
                 )
             }
-
             composable("lists") {
                 ListsScreen(
                     viewModel = viewModel,
-                    onCreateList = {
-                        navController.navigate("lists") {
-                            popUpTo("lists") { inclusive = true }
-                            launchSingleTop = true
-                        }
-                    },
-                    onListClick = { listId ->
-                        navController.navigate("customList/$listId")
-                    }
+                    onCreateList = { navController.navigate("lists") { popUpTo("lists") { inclusive = true }; launchSingleTop = true } },
+                    onListClick = { listId -> navController.navigate("customList/$listId") }
                 )
             }
-
             composable("saved") {
                 SavedScreen(
                     viewModel = viewModel,
-                    onEntryClick = { entry ->
-                        navController.navigate("detail/${entry.id}")
-                    }
+                    onEntryClick = { entry -> navController.navigate("detail/${entry.id}") }
                 )
             }
-
             composable("grammar") {
                 GrammarLessonScreen(navController = navController)
             }
-
             composable(
-                route = "detail/{id}",
+                "detail/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: -1
                 val entry by viewModel.getEntryById(id).observeAsState()
-
-                EntryDetailScreen(
-                    entry = entry ?: return@composable,
-                    viewModel = viewModel
-                )
+                EntryDetailScreen(entry = entry ?: return@composable, viewModel = viewModel)
             }
-
             composable(
-                route = "customList/{listId}",
+                "customList/{listId}",
                 arguments = listOf(navArgument("listId") { type = NavType.IntType })
             ) { backStackEntry ->
                 val listId = backStackEntry.arguments?.getInt("listId") ?: -1
@@ -150,9 +129,7 @@ fun AppNavHost(
                     CustomListScreen(
                         listId = listId,
                         viewModel = viewModel,
-                        onEntryClick = { entry ->
-                            navController.navigate("detail/${entry.id}")
-                        },
+                        onEntryClick = { entry -> navController.navigate("detail/${entry.id}") },
                         onNavigateBack = {
                             navController.popBackStack()
                             navController.navigate("lists")
@@ -163,8 +140,13 @@ fun AppNavHost(
                     navController.navigate("lists")
                 }
             }
-
-
+            composable(
+                "webView/{url}",
+                arguments = listOf(navArgument("url") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val url = backStackEntry.arguments?.getString("url") ?: ""
+                WebViewScreen(navController = navController, url = url)
+            }
         }
     }
 }

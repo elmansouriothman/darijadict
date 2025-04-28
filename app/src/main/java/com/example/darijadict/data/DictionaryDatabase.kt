@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Entry::class, CustomList::class, EntryListJoin::class],
-    version = 5
+    version = 6
 )
 abstract class DictionaryDatabase : RoomDatabase() {
     abstract fun entryDao(): EntryDao

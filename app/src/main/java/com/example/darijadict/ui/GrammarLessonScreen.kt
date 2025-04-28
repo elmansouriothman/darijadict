@@ -1,6 +1,7 @@
 package com.example.darijadict.ui
 
 import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,7 +38,8 @@ fun GrammarLessonScreen(
                         .padding(vertical = 4.dp),
                     onClick = {
                         if (lesson.link.isNotBlank()) {
-                            openWebPage(context, lesson.link)
+                            val encodedUrl = Uri.encode(lesson.link)
+                            navController.navigate("webView/$encodedUrl")
                         } else {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(
