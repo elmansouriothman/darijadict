@@ -22,7 +22,12 @@ import com.example.darijadict.viewmodel.EntryViewModel
 import com.example.darijadict.viewmodel.SearchCategory
 import com.example.darijadict.data.Entry
 import androidx.compose.ui.text.style.TextAlign
+import android.Manifest
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun DictionaryScreen(
     viewModel: EntryViewModel = viewModel(),
@@ -58,6 +63,15 @@ fun DictionaryScreen(
 
     }
 
+    // Check for storage permission
+    val permissionState = rememberPermissionState(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    LaunchedEffect(Unit) {
+        if (!permissionState.status.isGranted) {
+            permissionState.launchPermissionRequest()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +100,7 @@ fun DictionaryScreen(
                 )
                 .padding(bottom = 8.dp)
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(58.dp)
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.surface),
             verticalAlignment = Alignment.CenterVertically

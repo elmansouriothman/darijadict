@@ -93,8 +93,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose.v276)
     implementation(libs.gson)
     implementation(libs.material.icons.extended)
-
-
-
+    implementation("com.google.accompanist:accompanist-permissions:0.28.0")
 
 }

@@ -10,7 +10,7 @@ import java.io.IOException
 
 object ApkgDownloader {
     private const val TAG = "ApkgDownloader"
-    private const val FILENAME = "darija_deck.apkg"
+    private const val FILENAME = "darija_deck.zip"
     private const val BUFFER_SIZE = 8192 // Optimal buffer size for file operations
 
     /**
@@ -93,17 +93,21 @@ object ApkgDownloader {
      * Performs the actual file copy operation with progress tracking
      */
     private fun copyAssetToFile(context: Context, destFile: File) {
-        context.assets.open(FILENAME).use { inputStream ->
-            FileOutputStream(destFile).use { outputStream ->
-                val buffer = ByteArray(BUFFER_SIZE)
-                var bytesRead: Int
-                var totalBytes = 0L
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    outputStream.write(buffer, 0, bytesRead)
-                    totalBytes += bytesRead
+        try {
+            context.assets.open(FILENAME).use { inputStream ->
+                FileOutputStream(destFile).use { outputStream ->
+                    val buffer = ByteArray(BUFFER_SIZE)
+                    var bytesRead: Int
+                    var totalBytes = 0L
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        outputStream.write(buffer, 0, bytesRead)
+                        totalBytes += bytesRead
+                    }
+                    Log.d(TAG, "File copy completed. Total bytes: $totalBytes")
                 }
-                Log.d(TAG, "File copy completed. Total bytes: $totalBytes")
             }
+        } catch (e: IOException) {
+            Log.e(TAG, "Error copying asset to file: ${e.message}")
         }
     }
 

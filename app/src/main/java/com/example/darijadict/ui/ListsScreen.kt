@@ -137,13 +137,13 @@ fun ListsScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Spacer(Modifier.width(8.dp))
-                Text("Create New List")
+                Text("New List")
             }
 
             Button(
                 onClick = {
                     if (hasStoragePermission) {
-                        val fileName = "darija_deck.apkg"
+                        val fileName = "darija_deck.zip"
                         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         val file = File(downloadsDir, fileName)
 
@@ -171,7 +171,7 @@ fun ListsScreen(
             ) {
                 Icon(Icons.Default.FileDownload, contentDescription = "Download")
                 Spacer(Modifier.width(8.dp))
-                Text("Download .apkg")
+                Text(".apkg")
             }
         }
 
