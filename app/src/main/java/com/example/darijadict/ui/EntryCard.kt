@@ -9,91 +9,113 @@ import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.ui.unit.sp
 import com.example.darijadict.data.Entry
 import com.example.darijadict.viewmodel.EntryViewModel
-import androidx.compose.runtime.livedata.observeAsState
 
 @Composable
 fun EntryCard(
     entry: Entry,
     viewModel: EntryViewModel,
     onClick: () -> Unit,
-    onAddToListClick: () -> Unit // New parameter for list addition
+    onAddToListClick: () -> Unit
 ) {
     val savedEntries by viewModel.savedWords.observeAsState(emptyList())
     val isSaved = remember(savedEntries) { savedEntries.any { it.id == entry.id } }
 
     Card(
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp)
-            .fillMaxHeight(0.9f)
+            .padding(horizontal = 4.dp, vertical = 6.dp)
             .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
-                .padding(10.dp)
+                .padding(16.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .padding(end = 8.dp)
             ) {
-                Row(horizontalArrangement = Arrangement.Start) {
+                Text(
+                    text = entry.word,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color(0xFF37474F)
+                    )
+                )
+
+                if (entry.arabicScript.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = entry.word,
-                        style = MaterialTheme.typography.titleMedium
+                        text = entry.arabicScript,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontSize = 18.sp,
+                            color = Color(0xFF0066CC)
+                        )
                     )
                 }
-                Spacer(modifier = Modifier.height(9.dp))
-                Text(
-                    text = entry.arabicScript,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Start
-                )
-                Spacer(modifier = Modifier.height(9.dp))
-                Text(text = entry.meaning, style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(10.dp))
+
+                if (entry.meaning.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = entry.meaning,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color(0xFF546E7A)
+                        )
+                    )
+                }
             }
 
-            Column {
-                // Bookmark Icon Button
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Center
+            ) {
                 IconButton(
                     onClick = { viewModel.toggleSave(entry.id, isSaved) },
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        containerColor = Color.Transparent,
+                        contentColor = Color.DarkGray
                     ),
                     interactionSource = remember { MutableInteractionSource() },
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
                         imageVector = if (isSaved) Icons.Outlined.Bookmark else Icons.Outlined.BookmarkAdd,
                         contentDescription = if (isSaved) "Unsave" else "Save",
-                        tint = if (isSaved) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (isSaved) Color(0xFF81C784) else Color(0xFFC8E6C9)
+
                     )
                 }
-                // Add to list button
+
+                Spacer(modifier = Modifier.height(4.dp))
+
                 IconButton(
-                    onClick = { onAddToListClick() }, // Call the passed function
+                    onClick = onAddToListClick,
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.primary
                     ),
-                    interactionSource = remember { MutableInteractionSource() }
+                    interactionSource = remember { MutableInteractionSource() },
+                    modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Queue,
-                        contentDescription = "Add to list",
-                        tint = MaterialTheme.colorScheme.primary
+                        contentDescription = "Add to List",
+                        tint = Color(0xFF81C784)
                     )
                 }
             }

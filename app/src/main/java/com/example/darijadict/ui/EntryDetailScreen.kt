@@ -1,5 +1,6 @@
 package com.example.darijadict.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.outlined.Queue
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -72,12 +74,20 @@ fun EntryDetailScreen(
         ) {
             entry.pronunciation?.takeIf { it.isNotBlank() }?.let {
 
-                IconButton(onClick = { playAssetAudio(context, it) }) {
+                IconButton(
+                    onClick = { playAssetAudio(context, it) },
+                    modifier = Modifier
+                        .background(Color(0xFF37474F), CircleShape)
+                        .size(40.dp) // Adjust the size as needed
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.VolumeUp,
                         contentDescription = "Pronunciation",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(50.dp)
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(20.dp) // Adjust the icon size as needed
+
+
                     )
                 }
             }
@@ -267,7 +277,11 @@ fun EntryDetailScreen(
         ) {
             Button(
                 onClick = { viewModel.toggleSave(entry.id, isSaved) },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF37474F), // Sober soft blue
+                    contentColor = Color.White
+                )
             ) {
                 Icon(
                     imageVector = if (isSaved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkAdd,
@@ -279,7 +293,11 @@ fun EntryDetailScreen(
 
             Button(
                 onClick = { showListDialog = true },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF37474F), // Sober soft blue
+                    contentColor = Color.White
+                )
             ) {
                 Icon(Icons.Outlined.Queue, contentDescription = null)
                 Spacer(Modifier.width(8.dp))

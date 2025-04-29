@@ -7,46 +7,17 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,11 +31,106 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.example.darijadict.data.CustomList
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.ui.unit.sp
 import com.example.darijadict.util.ApkgDownloader
 import com.example.darijadict.viewmodel.EntryViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 
+@Composable
+fun CreateListDialog(
+    newListName: String,
+    onNameChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Create New List") },
+        text = {
+            OutlinedTextField(
+                value = newListName,
+                onValueChange = onNameChange,
+                singleLine = true,
+                label = { Text("List name") }
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Create")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun ListItemCard(
+    list: CustomList,
+    onListClick: (Int) -> Unit,
+    onOpen: () -> Unit,
+    onEmpty: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp)
+            .clickable { onOpen() },
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(6.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.EditNote,
+                    contentDescription = "Custom List",
+                    tint = Color(0xFF0066CC)
+                )
+                Text(
+                    text = list.name,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color(0xFF0066CC)
+                    )
+
+                )
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                IconButton(onClick = onEmpty) {
+                    Icon(
+                        imageVector = Icons.Default.SpaceBar,
+                        contentDescription = "Empty",
+                        tint = Color(0xFF81C784)
+                    )
+                }
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = Color(0xFF81C784)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListsScreen(
     viewModel: EntryViewModel,
@@ -74,30 +140,26 @@ fun ListsScreen(
 ) {
     val context = LocalContext.current
     val allLists by viewModel.allLists.observeAsState(emptyList())
+    val coroutineScope = rememberCoroutineScope()
     var showCreateDialog by remember { mutableStateOf(false) }
     var newListName by remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
     var listToDelete by remember { mutableStateOf<CustomList?>(null) }
     var listToEmpty by remember { mutableStateOf<CustomList?>(null) }
 
-    // Permission handling
     var hasStoragePermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                context, Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         )
     }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        hasStoragePermission = isGranted
-        Log.d("ListsScreen", "Permission granted: $hasStoragePermission")
-    }
+    ) { isGranted -> hasStoragePermission = isGranted }
+
     val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(key1 = lifecycleOwner) {
+    LaunchedEffect(Unit) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_CREATE) {
                 launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -109,20 +171,29 @@ fun ListsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF5F7FA)) // Soft background
             .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 8.dp)
-        ){
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp)
+        ) {
             Icon(
                 Icons.AutoMirrored.Filled.FormatListBulleted,
-                "Lists", modifier = Modifier.width(32.dp).height(32.dp)
+                contentDescription = "Lists",
+                tint = Color(0xFF0D47A1),
+                modifier = Modifier.size(36.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = "Lists",
-                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0D47A1)
+                ),
                 textAlign = TextAlign.Start
             )
         }
@@ -133,7 +204,8 @@ fun ListsScreen(
         ) {
             Button(
                 onClick = { showCreateDialog = true },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Spacer(Modifier.width(8.dp))
@@ -143,31 +215,31 @@ fun ListsScreen(
             Button(
                 onClick = {
                     if (hasStoragePermission) {
-                        val fileName = "darija_deck.zip"
-                        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        val file = File(downloadsDir, fileName)
+                        coroutineScope.launch {
+                            try {
+                                val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                val file = File(downloadsDir, "darija_deck.zip")
+                                val (success, message) = ApkgDownloader.downloadApkg(context)
 
-                        try {
-
-                            val (success, message) = ApkgDownloader.downloadApkg(context) // Ensure this returns Pair<Boolean, String>
-
-                            if (success) {
-                                file.writeText(message) // Assuming message contains the content to write
-                                Toast.makeText(context, "File saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-                                Log.d("ListsScreen", "File saved to ${file.absolutePath}")
-                            } else {
-                                Toast.makeText(context, "Failed to download file: $message", Toast.LENGTH_SHORT).show()
-                                Log.e("ListsScreen", "Failed to download file: $message")
+                                if (success) {
+                                    file.writeText(message)
+                                    Toast.makeText(context, "Saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                                    Log.d("ListsScreen", "Saved to ${file.absolutePath}")
+                                } else {
+                                    Toast.makeText(context, "Download failed: $message", Toast.LENGTH_SHORT).show()
+                                    Log.e("ListsScreen", "Download failed: $message")
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Log.e("ListsScreen", "Error: ${e.message}")
                             }
-                        } catch (e: Exception) {
-                            Toast.makeText(context, "Failed to save file: ${e.message}", Toast.LENGTH_SHORT).show()
-                            Log.e("ListsScreen", "Failed to save file: ${e.message}")
                         }
                     } else {
                         launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     }
                 },
                 modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
             ) {
                 Icon(Icons.Default.FileDownload, contentDescription = "Download")
                 Spacer(Modifier.width(8.dp))
@@ -175,40 +247,60 @@ fun ListsScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(12.dp))
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Match the card elevation
+                .padding(horizontal = 4.dp, vertical = 6.dp)
+                .clickable { navController.navigate("saved") },
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
         ) {
-            Button(
-                onClick = {
-                    navController.navigate("saved") // Ensure this matches your navigation route
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant, // Match color with EntryCard
-                    contentColor = Color.Black // Adjust text color accordingly
-                ),
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp) // Adjust padding to match the button style in EntryCard
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    imageVector = Icons.Default.Bookmarks,
+                    contentDescription = "Saved", tint = Color(0xFF0066CC)
 
-                Icon(Icons.Filled.Bookmarks, contentDescription = "Saved")
+
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Saved", style = MaterialTheme.typography.titleMedium, modifier = Modifier.fillMaxWidth(1f))
+                Text(
+                    text = "Saved",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        Color(0xFF0066CC)
+                    )
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "", modifier = Modifier.padding(end = 10.dp))
+
+
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         if (allLists.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No lists yet. Create your first list!")
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No lists yet. Create your first one!",
+                    style = MaterialTheme.typography.bodyLarge.copy(color = Color.DarkGray)
+                )
             }
         } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 items(allLists) { list ->
                     ListItemCard(
                         list = list,
@@ -222,47 +314,27 @@ fun ListsScreen(
         }
     }
 
-    // Confirm Delete Dialog
     listToDelete?.let { list ->
-        AlertDialog(
-            onDismissRequest = { listToDelete = null },
-            title = { Text("Delete this list?") },
-            text = { Text("This will permanently delete '${list.name}' and its associations.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    coroutineScope.launch { viewModel.deleteList(list.id) }
-                    listToDelete = null
-                }) {
-                    Text("Delete")
-                }
+        ConfirmDialog(
+            title = "Delete this list?",
+            text = "This will permanently delete '${list.name}'.",
+            onConfirm = {
+                coroutineScope.launch { viewModel.deleteList(list.id) }
+                listToDelete = null
             },
-            dismissButton = {
-                TextButton(onClick = { listToDelete = null }) {
-                    Text("Cancel")
-                }
-            }
+            onDismiss = { listToDelete = null }
         )
     }
 
-    // Confirm Empty Dialog
     listToEmpty?.let { list ->
-        AlertDialog(
-            onDismissRequest = { listToEmpty = null },
-            title = { Text("Empty this list?") },
-            text = { Text("All entries in '${list.name}' will be removed, but the list will remain.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    coroutineScope.launch { viewModel.clearList(list.id) }
-                    listToEmpty = null
-                }) {
-                    Text("Empty")
-                }
+        ConfirmDialog(
+            title = "Empty this list?",
+            text = "All entries in '${list.name}' will be removed.",
+            onConfirm = {
+                coroutineScope.launch { viewModel.clearList(list.id) }
+                listToEmpty = null
             },
-            dismissButton = {
-                TextButton(onClick = { listToEmpty = null }) {
-                    Text("Cancel")
-                }
-            }
+            onDismiss = { listToEmpty = null }
         )
     }
 
@@ -273,7 +345,8 @@ fun ListsScreen(
             onConfirm = {
                 coroutineScope.launch {
                     viewModel.createList(newListName)
-                    viewModel.allLists.value?.lastOrNull()?.id?.let { onCreateList(it) }
+                    val lastId = viewModel.allLists.value?.lastOrNull()?.id
+                    lastId?.let { onCreateList(it) }
                     newListName = ""
                     showCreateDialog = false
                 }
@@ -283,103 +356,23 @@ fun ListsScreen(
     }
 }
 
-@Composable
-private fun ListItemCard(
-    list: CustomList,
-    onListClick: (Int) -> Unit,
-    onOpen: () -> Unit,
-    onEmpty: () -> Unit,
-    onDelete: () -> Unit
-) {
-    var menuExpanded by remember { mutableStateOf(false) }
-
-    Card(
-        onClick = { onListClick(list.id) },
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-
-        ) {
-            Icon(Icons.Filled.EditNote, contentDescription = "Playlist")
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = list.name,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.weight(1f),
-
-                )
-
-
-            Box {
-                IconButton(onClick = { menuExpanded = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "More options")
-                }
-
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Open") },
-                        onClick = {
-                            menuExpanded = false
-                            onOpen()
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Empty List") },
-                        onClick = {
-                            menuExpanded = false
-                            onEmpty()
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Delete List") },
-                        onClick = {
-                            menuExpanded = false
-                            onDelete()
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
-private fun CreateListDialog(
-    newListName: String,
-    onNameChange: (String) -> Unit,
+private fun ConfirmDialog(
+    title: String,
+    text: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New List Name") },
-        text = {
-            OutlinedTextField(
-                value = newListName,
-                onValueChange = onNameChange,
-                label = { Text("Enter list name") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
+        title = { Text(title) },
+        text = { Text(text) },
         confirmButton = {
-            Button(onClick = onConfirm, enabled = newListName.isNotBlank()) {
-                Text("Create")
-            }
+            TextButton(onClick = onConfirm) { Text("Confirm") }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
+            TextButton(onClick = onDismiss) { Text("Cancel") }
         }
     )
 }

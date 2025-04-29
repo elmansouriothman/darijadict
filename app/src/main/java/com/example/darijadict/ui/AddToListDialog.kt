@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.darijadict.viewmodel.EntryViewModel
 
@@ -53,12 +54,17 @@ fun AddToListDialog(
             }
         },
         confirmButton = {
-            Button(onClick = onDismiss) {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
+            ) {
                 Text("Done")
             }
         },
         dismissButton = {
-            Button(onClick = { showCreateDialog = true }) {
+            Button(onClick = { showCreateDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
+            ) {
                 Text("New List")
             }
         }
@@ -83,16 +89,20 @@ fun AddToListDialog(
                         newListName = ""
                         showCreateDialog = false
                     },
-                    enabled = newListName.isNotBlank()
+                    enabled = newListName.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
                 ) {
                     Text("Create")
                 }
             },
             dismissButton = {
-                Button(onClick = { showCreateDialog = false }) {
-                    Text("Cancel")
-                }
+                Button(
+                    onClick = { showCreateDialog = false
+                              }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
+                    )
+                { Text("Cancel") }
             }
         )
     }
 }
+

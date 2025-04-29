@@ -2,6 +2,7 @@ package com.example.darijadict.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -27,24 +28,34 @@ fun GuideScreen(navController: NavController) {
             .verticalScroll(rememberScrollState())
     ) {
         // Title
-        Text(
-            text = "📚 How to Use the App - Moroccan Darija",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF37474F) // calm dark grey-blue
-            ),
-            textAlign = TextAlign.Center,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp)
-        )
+                .padding(bottom = 20.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Info,
+                contentDescription = "Info Icon",
+                tint = Color(0xFF0D47A1), // calm dark grey-blue
+                modifier = Modifier.size(36.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "How to Use the App",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0D47A1) // calm dark grey-blue
+                ),
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
         // Guide sections
         GuideSection(
-            title = "🧭 1. Main Screens Overview",
+            title = "1. Main Screens Overview",
             content = listOf(
                 "Guide",
                 "Dictionary",
@@ -55,7 +66,7 @@ fun GuideScreen(navController: NavController) {
         )
 
         GuideSection(
-            title = "🔎 2. Dictionary Screen",
+            title = "2. Dictionary Screen",
             content = listOf(
                 "All categories",
                 "Only in Darija",
@@ -66,7 +77,7 @@ fun GuideScreen(navController: NavController) {
         )
 
         GuideSection(
-            title = "📝 3. Lists Screen",
+            title = "3. Lists Screen",
             content = listOf(
                 "New List button to create custom lists",
                 "Download Anki Deck Note Template",
@@ -76,13 +87,13 @@ fun GuideScreen(navController: NavController) {
         )
 
         GuideSection(
-            title = "📚 4. Grammar Screen",
+            title = "4. Grammar Screen",
             content = emptyList(),
             paragraph = "The Grammar screen contains all the lessons you should follow, from easiest to hardest, in the recommended order."
         )
 
         GuideSection(
-            title = "🎯 5. How to Study Vocabulary on Anki",
+            title = "5. How to Study Vocabulary on Anki",
             content = listOf(
                 "Install Ankidroid (or Anki Desktop)",
                 "Download the Anki Deck Template",
@@ -99,7 +110,7 @@ fun GuideScreen(navController: NavController) {
         Button(
             onClick = { navController.navigate("recommendations") },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4A90E2), // Sober soft blue
+                containerColor = Color(0xFF37474F),
                 contentColor = Color.White
             ),
             modifier = Modifier
