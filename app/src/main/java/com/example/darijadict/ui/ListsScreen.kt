@@ -24,15 +24,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.example.darijadict.data.CustomList
-import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.ui.unit.sp
 import com.example.darijadict.util.ApkgDownloader
 import com.example.darijadict.viewmodel.EntryViewModel
 import kotlinx.coroutines.launch
@@ -70,13 +70,16 @@ fun CreateListDialog(
 }
 
 @Composable
-fun ListItemCard(
+private fun ListItemCard(
     list: CustomList,
     onListClick: (Int) -> Unit,
     onOpen: () -> Unit,
     onEmpty: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onRename: () -> Unit
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,7 +109,6 @@ fun ListItemCard(
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = Color(0xFF0066CC)
                     )
-
                 )
             }
 
@@ -125,9 +127,69 @@ fun ListItemCard(
                         tint = Color(0xFF81C784)
                     )
                 }
+                IconButton(onClick = { menuExpanded = true }) {
+                    Icon(
+                        Icons.Default.MoreVert, contentDescription = "More options", tint =Color(0xFF81C784))
+                }
             }
         }
+
+        DropdownMenu(
+            expanded = menuExpanded,
+            onDismissRequest = { menuExpanded = false },
+            offset = DpOffset(x = 30.dp, y = -30.dp) // Adjust the offset as needed
+        ) {
+            DropdownMenuItem(
+                text = { Text("Rename") },
+                onClick = {
+                    menuExpanded = false
+                    onRename()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Empty List") },
+                onClick = {
+                    menuExpanded = false
+                    onEmpty()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Delete List") },
+                onClick = {
+                    menuExpanded = false
+                    onDelete()
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun RenameListDialog(
+    currentName: String,
+    onNameChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Rename List") },
+        text = {
+            OutlinedTextField(
+                value = currentName,
+                onValueChange = onNameChange,
+                label = { Text("New list name") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) { Text("Rename") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -145,6 +207,8 @@ fun ListsScreen(
     var newListName by remember { mutableStateOf("") }
     var listToDelete by remember { mutableStateOf<CustomList?>(null) }
     var listToEmpty by remember { mutableStateOf<CustomList?>(null) }
+    var listToRename by remember { mutableStateOf<CustomList?>(null) }
+    var newRenameName by remember { mutableStateOf("") }
 
     var hasStoragePermission by remember {
         mutableStateOf(
@@ -307,7 +371,8 @@ fun ListsScreen(
                         onListClick = onListClick,
                         onOpen = { onListClick(list.id) },
                         onEmpty = { listToEmpty = list },
-                        onDelete = { listToDelete = list }
+                        onDelete = { listToDelete = list },
+                        onRename = { listToRename = list; newRenameName = list.name }
                     )
                 }
             }
@@ -338,6 +403,18 @@ fun ListsScreen(
         )
     }
 
+    listToRename?.let { list ->
+        RenameListDialog(
+            currentName = newRenameName,
+            onNameChange = { newRenameName = it },
+            onConfirm = {
+                coroutineScope.launch { viewModel.renameList(list.id, newRenameName) }
+                listToRename = null
+            },
+            onDismiss = { listToRename = null }
+        )
+    }
+
     if (showCreateDialog) {
         CreateListDialog(
             newListName = newListName,
@@ -355,7 +432,6 @@ fun ListsScreen(
         )
     }
 }
-
 
 @Composable
 private fun ConfirmDialog(

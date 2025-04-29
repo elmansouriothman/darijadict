@@ -78,6 +78,12 @@ class EntryViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun renameList(listId: Int, newName: String) {
+        viewModelScope.launch {
+            dao.renameList(listId, newName)
+        }
+    }
+
     init {
         preloadFromCsv()
     }

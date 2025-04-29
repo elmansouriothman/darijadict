@@ -71,6 +71,9 @@ interface EntryDao {
     @Query("DELETE FROM custom_lists WHERE id = :listId")
     suspend fun deleteListById(listId: Int)
 
+    @Query("UPDATE custom_lists SET name = :newName WHERE id = :listId")
+    suspend fun renameList(listId: Int, newName: String)
+
     // ✅ Entry <-> List Join
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addEntryToList(entryListJoin: EntryListJoin)
