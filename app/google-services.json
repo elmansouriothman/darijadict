@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "832946076488",
+    "project_id": "darija-grammar",
+    "storage_bucket": "darija-grammar.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832946076488:android:983903c314b22f2438517d",
+        "android_client_info": {
+          "package_name": "com.example.darijadict"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXJ3chLQc3Iku0xhMo1mabAC2Ewutdedo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
