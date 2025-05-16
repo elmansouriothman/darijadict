@@ -6,5 +6,6 @@ data class GrammarSlide(
     val order: Int,
     val arabicScript: String? = null,
     val characterEquivalent: String? = null,
-    val needsAudio: Boolean = false
+    val needsAudio: Boolean = false,
+    val audioFile: String? = null
 )

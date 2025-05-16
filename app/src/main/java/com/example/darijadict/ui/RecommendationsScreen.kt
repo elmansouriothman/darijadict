@@ -136,7 +136,7 @@ fun RecommendationCard(
             if (recommendation.link.isBlank()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "⚠️ Link not available",
+                    text = "",
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.error
                     )

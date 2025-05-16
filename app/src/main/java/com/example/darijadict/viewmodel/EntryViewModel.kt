@@ -113,7 +113,8 @@ class EntryViewModel @Inject constructor(
                                 order = (map["order"] as? Long)?.toInt() ?: 0,
                                 arabicScript = map["arabicScript"] as? String,
                                 characterEquivalent = map["characterEquivalent"] as? String,
-                                needsAudio = map["needsAudio"] as? Boolean ?: false
+                                needsAudio = map["needsAudio"] as? Boolean ?: false,
+                                audioFile = map["audioFile"] as? String
                             )
                         } catch (e: Exception) {
                             null
