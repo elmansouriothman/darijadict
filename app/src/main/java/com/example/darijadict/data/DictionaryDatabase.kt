@@ -7,23 +7,25 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Entry::class, CustomList::class, EntryListJoin::class],
-    version = 10
+    version = 1,
+    exportSchema = true
 )
 abstract class DictionaryDatabase : RoomDatabase() {
     abstract fun entryDao(): EntryDao
 
     companion object {
-        @Volatile private var INSTANCE: DictionaryDatabase? = null
+        @Volatile
+        private var INSTANCE: DictionaryDatabase? = null
 
         fun getDatabase(context: Context): DictionaryDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     DictionaryDatabase::class.java,
-                    "dictionary.db"
+                    "dictionary_database"
                 )
-                    .fallbackToDestructiveMigration(true)
-                    .build()
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }

@@ -13,16 +13,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.darijadict.ui.*
 import com.example.darijadict.viewmodel.EntryViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavHost(
-    viewModel: EntryViewModel,
+    viewModel: EntryViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -132,6 +134,14 @@ fun AppNavHost(
             }
             composable("grammar") {
                 GrammarLessonScreen(navController = navController)
+            }
+            composable("grammarSlides/{lessonId}") { backStackEntry ->
+                val slidesViewModel: EntryViewModel = hiltViewModel()
+                GrammarLessonSlidesScreen(
+                    navController = navController,
+                    viewModel = slidesViewModel,
+                    lessonId = backStackEntry.arguments?.getString("lessonId") ?: ""
+                )
             }
             composable("guide") {
                 GuideScreen(navController = navController)

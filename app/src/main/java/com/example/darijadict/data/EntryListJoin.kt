@@ -2,6 +2,7 @@ package com.example.darijadict.data
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "entry_list_join",
@@ -19,6 +20,10 @@ import androidx.room.ForeignKey
             childColumns = ["listId"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(value = ["entryId"]),
+        Index(value = ["listId"])
     ]
 )
 data class EntryListJoin(

@@ -54,7 +54,6 @@ object CsvLoader {
             reader.forEachLine { line ->
                 val cols = line.split(";").map { it.trim() }
                 if (cols.size >= 2) {
-                    // Source Title is column 4, Sources is column 5
                     lessons.add(
                         GrammarLesson(
                             lesson = cols[0],

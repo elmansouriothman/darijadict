@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     // Add the dependency for the Google services Gradle plugin
     id("com.google.gms.google-services") version "4.4.2" apply false
-
-
+    
+    // Add these plugins
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22" apply false
+    id("androidx.room") version "2.6.1" apply false
+    id("com.google.dagger.hilt.android") version "2.48" apply false
+    id("org.jetbrains.kotlin.kapt") version "1.9.22" apply false
 }

@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize") // ✅ Required for @Parcelize
     id("com.google.gms.google-services")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -17,6 +18,14 @@ android {
         targetSdk = 34 // Update to the latest stable version
         versionCode = 1
         versionName = "1.0"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf(
+                    "room.schemaLocation" to "$projectDir/schemas",
+                    "room.incremental" to "true"
+                )
+            }
+        }
     }
 
     buildTypes {
@@ -83,10 +92,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx.v262)
     implementation(libs.androidx.runtime.livedata)
 
-    // Room
-    implementation(libs.androidx.room.runtime.v261)
-    implementation(libs.androidx.room.ktx.v261)
-    kapt(libs.androidx.room.compiler)
+    // Room components
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    
+    // Kotlin metadata processor
+    kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.7.0")
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
@@ -105,5 +117,11 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.material.icons.extended)
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+    implementation("com.google.accompanist:accompanist-pager:0.28.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
 }

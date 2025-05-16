@@ -1,11 +1,16 @@
 package com.example.darijadict.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.darijadict.data.*
+import com.example.darijadict.model.GrammarSlide
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import androidx.lifecycle.AndroidViewModel
-import com.example.darijadict.data.CsvLoader
 
 enum class SearchCategory(val displayName: String) {
     ALL("All Categories"),
@@ -14,7 +19,14 @@ enum class SearchCategory(val displayName: String) {
     ARABIC("Arabic")
 }
 
-class EntryViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class EntryViewModel @Inject constructor(
+    application: Application
+) : AndroidViewModel(application) {
+    private val firestore = Firebase.firestore
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
     fun getAll(): LiveData<List<Entry>> = dao.getAllEntriesSortedByWord()
 
 
@@ -82,6 +94,41 @@ class EntryViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             dao.renameList(listId, newName)
         }
+    }
+
+    fun getGrammarLessonSlides(lessonId: String): LiveData<List<GrammarSlide>> {
+        val slidesLiveData = MutableLiveData<List<GrammarSlide>>()
+        
+        firestore.collection("grammar_lessons")
+            .document(lessonId)
+            .get()
+            .addOnSuccessListener { document ->
+                try {
+                    val slides = document.get("slides") as? List<Map<String, Any>> ?: emptyList()
+                    val parsedSlides = slides.mapNotNull { map ->
+                        try {
+                            GrammarSlide(
+                                text = map["text"] as? String ?: "",
+                                type = map["type"] as? String ?: "paragraph",
+                                order = (map["order"] as? Long)?.toInt() ?: 0,
+                                arabicScript = map["arabicScript"] as? String,
+                                characterEquivalent = map["characterEquivalent"] as? String,
+                                needsAudio = map["needsAudio"] as? Boolean ?: false
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }.sortedBy { it.order }
+                    slidesLiveData.value = parsedSlides
+                } catch (e: Exception) {
+                    slidesLiveData.value = emptyList()
+                }
+            }
+            .addOnFailureListener { 
+                slidesLiveData.value = emptyList()
+            }
+        
+        return slidesLiveData
     }
 
     init {

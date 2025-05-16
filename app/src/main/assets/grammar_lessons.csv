@@ -1,58 +1,59 @@
-﻿Lesson;Link
-Introduction;https://englisharabictranslations.com/blog/a-guide-to-moroccan-arabic/
-FAQ: Everything You Need To Know;https://lingualid.com/what-is-darija/
-Alphabet;https://arabicpath.com/read-arabic/arabic-alphabet/
-Writing;https://arabicpath.com/read-arabic/arabic-joining-letters/
-Short Vowels;https://arabicpath.com/read-arabic/arabic-short-vowels/
-Long Vowels;https://arabicpath.com/read-arabic/arabic-long-vowels/
-Vowels;https://arabic.fi/lessons/vowels/
-Parts of Speech;https://arabicpath.com/basic-arabic/arabic-grammar-overview/
-Words of Time and Place;https://arabic.fi/lessons/time-and-place/
-Personal Pronouns;https://lingualid.com/moroccan-arabic-personal-pronouns/
-Objective Pronouns;https://arabic.desert-sky.net/g_pronouns.html
-Demonstratives;https://alwalidacademy.com/demonstrative-pronouns-in-the-arabic-language/
-Possession;https://lingualid.com/all-about-possession-in-moroccan-arabic/
-Particles;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_particles/
-Particles in Arabic;https://kalimah-center.com/particles-in-arabic/
-Prepositions;https://alifarabic.com/what-are-the-prepositions-and-their-uses/
-Question Words;https://preply.com/en/blog/arabic-grammar-rules/
-Nouns;https://www.learnarabiconline.com/arabic-grammar-introduction/
-Verbs;https://www.learnarabiconline.com/arabic-grammar-introduction/
-Tenses;https://preply.com/en/blog/arabic-grammar-rules/
-Present Tense;https://lingualid.com/present-tense-in-moroccan-arabic/
-Past Tense;https://lingualid.com/past-tense-in-moroccan-arabic/
-Future Tense;https://lingualid.com/future-tense-in-moroccan-arabic/
-Imperative;https://lingualid.com/imperative-in-moroccan-arabic/
-Conjugation;https://www.learnarabiconline.com/verb-conjugation/
-Participle;https://talkpal.ai/grammar/participle-in-arabic-grammar/
-Morphology;https://www.learnarabiconline.com/arabic-morphology-introduction/
-Inflection;https://www.learnarabiconline.com/inflection/
-Reflection;https://www.learnarabiconline.com/reflection/
-Sentences;https://www.learnarabiconline.com/arabic-grammar-introduction/
-Phrases;https://www.learnarabiconline.com/arabic-grammar-introduction/
-Gender;https://arabicpath.com/basic-arabic/arabic-gender/
-Plural;https://arabicpath.com/basic-arabic/arabic-plural/
-Grammatical Cases;https://arabicpath.com/basic-arabic/arabic-cases/
-Definite Article;https://lingualid.com/definite-article-in-moroccan-arabic/
-Word Patterns;https://arabicpath.com/basic-arabic/arabic-patterns/
-Patterns;https://arabic.fi/patterns/
-Indeclinable Nouns;https://arabicpath.com/basic-arabic/arabic-indeclinable-nouns/
-Compounds;https://arabicpath.com/basic-arabic/arabic-compounds/
-Adjectives;https://human.libretexts.org/Bookshelves/Languages/Arabic/
-Adverbs;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_adverbs/
-Determiners;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_determiners/
-Interjections;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_interjections/
-Negation;https://lingualid.com/negation-in-moroccan-arabic/
-Comparison;https://lingualid.com/comparison-in-moroccan-arabic/
-Superlative and Comparative;https://blogs.transparent.com/arabic/arabic-superlative-and-comparative/
-Modals;https://arabic.desert-sky.net/g_modals.html
-Multiword Terms;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_multiword_terms/
-Every, Whole and All;https://arabic.fi/lessons/
-Numbers and Quantities;https://talkpal.ai/vocabulary/quantitative-vocabulary-in-the-arabic-language/
-Greetings;https://lingualid.com/greetings-in-moroccan-arabic/
-Introducing Yourself;https://lingualid.com/introduce-yourself-in-moroccan-arabic/
-Countries, Nationalities and Languages;https://lingualid.com/countries-and-nationalities-in-moroccan-arabic/
-Colors;https://lingualid.com/colors-in-moroccan-arabic/
-Loanwords;https://lingualid.com/loanwords-in-moroccan-arabic/
-Particles;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_particles/
-Particles in Arabic;https://kalimah-center.com/particles-in-arabic/
+﻿Lesson;Link;Firebase
+Pronunciation and Transcription;;
+Introduction;https://englisharabictranslations.com/blog/a-guide-to-moroccan-arabic/;
+FAQ: Everything You Need To Know;https://lingualid.com/what-is-darija/;
+Alphabet;https://arabicpath.com/read-arabic/arabic-alphabet/;
+Writing;https://arabicpath.com/read-arabic/arabic-joining-letters/;
+Short Vowels;https://arabicpath.com/read-arabic/arabic-short-vowels/;
+Long Vowels;https://arabicpath.com/read-arabic/arabic-long-vowels/;
+Vowels;https://arabic.fi/lessons/vowels/;
+Parts of Speech;https://arabicpath.com/basic-arabic/arabic-grammar-overview/;
+Words of Time and Place;https://arabic.fi/lessons/time-and-place/;
+Personal Pronouns;https://lingualid.com/moroccan-arabic-personal-pronouns/;
+Objective Pronouns;https://arabic.desert-sky.net/g_pronouns.html;
+Demonstratives;https://alwalidacademy.com/demonstrative-pronouns-in-the-arabic-language/;
+Possession;https://lingualid.com/all-about-possession-in-moroccan-arabic/;
+Particles;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_particles/;
+Particles in Arabic;https://kalimah-center.com/particles-in-arabic/;
+Prepositions;https://alifarabic.com/what-are-the-prepositions-and-their-uses/;
+Question Words;https://preply.com/en/blog/arabic-grammar-rules/;
+Nouns;https://www.learnarabiconline.com/arabic-grammar-introduction/;
+Verbs;https://www.learnarabiconline.com/arabic-grammar-introduction/;
+Tenses;https://preply.com/en/blog/arabic-grammar-rules/;
+Present Tense;https://lingualid.com/present-tense-in-moroccan-arabic/;
+Past Tense;https://lingualid.com/past-tense-in-moroccan-arabic/;
+Future Tense;https://lingualid.com/future-tense-in-moroccan-arabic/;
+Imperative;https://lingualid.com/imperative-in-moroccan-arabic/;
+Conjugation;https://www.learnarabiconline.com/verb-conjugation/;
+Participle;https://talkpal.ai/grammar/participle-in-arabic-grammar/;
+Morphology;https://www.learnarabiconline.com/arabic-morphology-introduction/;
+Inflection;https://www.learnarabiconline.com/inflection/;
+Reflection;https://www.learnarabiconline.com/reflection/;
+Sentences;https://www.learnarabiconline.com/arabic-grammar-introduction/;
+Phrases;https://www.learnarabiconline.com/arabic-grammar-introduction/;
+Gender;https://arabicpath.com/basic-arabic/arabic-gender/;
+Plural;https://arabicpath.com/basic-arabic/arabic-plural/;
+Grammatical Cases;https://arabicpath.com/basic-arabic/arabic-cases/;
+Definite Article;https://lingualid.com/definite-article-in-moroccan-arabic/;
+Word Patterns;https://arabicpath.com/basic-arabic/arabic-patterns/;
+Patterns;https://arabic.fi/patterns/;
+Indeclinable Nouns;https://arabicpath.com/basic-arabic/arabic-indeclinable-nouns/;
+Compounds;https://arabicpath.com/basic-arabic/arabic-compounds/;
+Adjectives;https://human.libretexts.org/Bookshelves/Languages/Arabic/;
+Adverbs;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_adverbs/;
+Determiners;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_determiners/;
+Interjections;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_interjections/;
+Negation;https://lingualid.com/negation-in-moroccan-arabic/;
+Comparison;https://lingualid.com/comparison-in-moroccan-arabic/;
+Superlative and Comparative;https://blogs.transparent.com/arabic/arabic-superlative-and-comparative/;
+Modals;https://arabic.desert-sky.net/g_modals.html;
+Multiword Terms;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_multiword_terms/;
+Every, Whole and All;https://arabic.fi/lessons/;
+Numbers and Quantities;https://talkpal.ai/vocabulary/quantitative-vocabulary-in-the-arabic-language/;
+Greetings;https://lingualid.com/greetings-in-moroccan-arabic/;
+Introducing Yourself;https://lingualid.com/introduce-yourself-in-moroccan-arabic/;
+Countries, Nationalities and Languages;https://lingualid.com/countries-and-nationalities-in-moroccan-arabic/;
+Colors;https://lingualid.com/colors-in-moroccan-arabic/;
+Loanwords;https://lingualid.com/loanwords-in-moroccan-arabic/;
+Particles;https://en.wiktionary.org/wiki/Category:Moroccan_Arabic_particles/;
+Particles in Arabic;https://kalimah-center.com/particles-in-arabic/;

@@ -9,7 +9,9 @@ import androidx.compose.ui.Modifier
 import com.example.darijadict.navigation.AppNavHost
 import com.example.darijadict.viewmodel.EntryViewModel
 import com.example.darijadict.ui.theme.DarijaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: EntryViewModel by viewModels()

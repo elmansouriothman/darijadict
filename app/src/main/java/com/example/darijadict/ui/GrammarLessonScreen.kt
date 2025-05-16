@@ -80,7 +80,9 @@ fun GrammarLessonScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                if (lesson.link.isNotBlank()) {
+                                if (lessons.indexOf(lesson) == 0) {
+                                    navController.navigate("grammarSlides/lesson_1")
+                                } else if (lesson.link.isNotBlank()) {
                                     val encodedUrl = Uri.encode(lesson.link)
                                     navController.navigate("webView/$encodedUrl")
                                 } else {
